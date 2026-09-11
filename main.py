@@ -16,7 +16,7 @@ _steps = [
     # NOTE: We do not include this in the steps so it is not run by mistake.
     # You first need to promote a model export to "prod" before you can run this,
     # then you need to run this step explicitly
-#    "test_regression_model"
+    "test_regression_model"
 ]
 
 
@@ -75,7 +75,7 @@ def go(config: DictConfig):
                 env_manager="conda",
                 parameters={
                     "csv": f"{config["etl"]["output_artifact"]}:{config["tag"]["latest"]}",
-                    "ref": f"{config["etl"]["output_artifact"]}:{config["tag"]["reference"]}",
+                    "ref": f"{config["etl"]["output_artifact"]}:{config["alias"]["reference"]}",
                     "kl_threshold": config["data_check"]["kl_threshold"],
                     "min_price": config["etl"]["min_price"],
                     "max_price": config["etl"]["max_price"]

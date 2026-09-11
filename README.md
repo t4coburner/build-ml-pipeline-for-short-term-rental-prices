@@ -1,4 +1,16 @@
 # Build an ML Pipeline for Short-Term Rental Prices in NYC
+
+- [Weights and Biases Project](https://wandb.ai/t4corun-mledp/nyc_airbnb/overview)
+- [My GitHub](https://github.com/t4coburner/build-ml-pipeline-for-short-term-rental-prices)
+
+Notes:
+- This project was done on a personal (e.g. non-work) computer, personal Weights and Bias account, and personal GitHub account
+- random_train_forest:v13 was my original best model, however I didn't remove duplicates and drop nulls. 
+- I reran the exercise after implementing that and the NYC geo filter and updated defaults. the new prod is v18
+
+
+## Context
+
 You are working for a property management company renting rooms and properties for short periods of 
 time on various rental platforms. You need to estimate the typical price for a given property based 
 on the price of similar properties. Your company receives new data in bulk every week. The model needs 

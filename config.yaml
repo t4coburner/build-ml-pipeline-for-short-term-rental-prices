@@ -7,8 +7,8 @@ main:
   steps: all
 tag:
   latest: "latest"
-  reference: "reference"
 alias:
+  reference: "reference"
   prod: "prod"
 etl:
   sample: "sample1.csv"
