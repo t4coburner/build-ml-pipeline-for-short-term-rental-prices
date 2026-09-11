@@ -5,13 +5,25 @@ main:
   project_name: nyc_airbnb
   experiment_name: development
   steps: all
+tag:
+  latest: "latest"
+  reference: "reference"
+alias:
+  prod: "prod"
 etl:
   sample: "sample1.csv"
   min_price: 10 # dollars
   max_price: 350 # dollars
+  input_artifact: "sample.csv"
+  output_artifact: "clean_sample.csv"
+  output_type: "clean_sample"
+  output_description: "Data with outliers removed"
 data_check:
   kl_threshold: 0.2
 modeling:
+  trainval_artifact: "trainval_data.csv"
+  testdata_artifact: "test_data.csv"
+  output_artifact: "random_forest_export"
   # Fraction of data to use for test (the remaining will be used for train and validation)
   test_size: 0.2
   # Fraction of remaining data to use for validation
@@ -22,7 +34,7 @@ modeling:
   stratify_by: "neighbourhood_group"
   # Maximum number of features to consider for the TFIDF applied to the title of the
   # insertion (the column called "name")
-  max_tfidf_features: 5
+  max_tfidf_features: 30
   # NOTE: you can put here any parameter that is accepted by the constructor of
   # RandomForestRegressor. This is a subsample, but more could be added:
   random_forest:
@@ -33,6 +45,6 @@ modeling:
     # Here -1 means all available cores
     n_jobs: -1
     criterion: squared_error
-    max_features: 0.5
+    max_features: 0.33
     # DO not change the following
     oob_score: true

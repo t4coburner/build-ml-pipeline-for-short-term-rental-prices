@@ -48,23 +48,54 @@ def go(config: DictConfig):
                     "artifact_description": "Raw file as downloaded"
                 },
             )
+            pass
 
         if "basic_cleaning" in active_steps:
-            ##################
-            # Implement here #
-            ##################
+            # Basic cleaning of the data
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "basic_cleaning"),
+                "main",
+                env_manager="conda",
+                parameters={
+                    "input_artifact": f"{config["etl"]["input_artifact"]}:{config["tag"]["latest"]}",
+                    "output_artifact": config["etl"]["output_artifact"],
+                    "output_type": config["etl"]["output_type"],
+                    "output_description": config["etl"]["output_description"],
+                    "min_price": config["etl"]["min_price"],
+                    "max_price": config["etl"]["max_price"]
+                },
+            )
             pass
 
         if "data_check" in active_steps:
-            ##################
-            # Implement here #
-            ##################
+            # Data check step
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "data_check"),
+                "main",
+                env_manager="conda",
+                parameters={
+                    "csv": f"{config["etl"]["output_artifact"]}:{config["tag"]["latest"]}",
+                    "ref": f"{config["etl"]["output_artifact"]}:{config["tag"]["reference"]}",
+                    "kl_threshold": config["data_check"]["kl_threshold"],
+                    "min_price": config["etl"]["min_price"],
+                    "max_price": config["etl"]["max_price"]
+                },
+            )
             pass
 
         if "data_split" in active_steps:
-            ##################
-            # Implement here #
-            ##################
+            # Data split step
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/train_val_test_split",
+                "main",
+                env_manager="conda",
+                parameters={
+                    "input": f"{config["etl"]["output_artifact"]}:{config["tag"]["latest"]}",
+                    "test_size": config["modeling"]["test_size"],
+                    "random_seed": config["modeling"]["random_seed"],
+                    "stratify_by": config["modeling"]["stratify_by"]
+                },
+            )
             pass
 
         if "train_random_forest" in active_steps:
@@ -77,20 +108,44 @@ def go(config: DictConfig):
             # NOTE: use the rf_config we just created as the rf_config parameter for the train_random_forest
             # step
 
-            ##################
-            # Implement here #
-            ##################
-
+            # Data check step
+            _ = mlflow.run(
+                os.path.join(hydra.utils.get_original_cwd(), "src", "train_random_forest"),
+                "main",
+                env_manager="conda",
+                parameters={
+                    "trainval_artifact": f"{config["modeling"]["trainval_artifact"]}:{config["tag"]["latest"]}",
+                    "val_size": config["modeling"]["val_size"],
+                    "random_seed": config["modeling"]["random_seed"],
+                    "stratify_by": config["modeling"]["stratify_by"],
+                    "rf_config": rf_config,
+                    "max_tfidf_features": config["modeling"]["max_tfidf_features"],
+                    "output_artifact": config["modeling"]["output_artifact"]
+                },
+            )
             pass
 
         if "test_regression_model" in active_steps:
-
-            ##################
-            # Implement here #
-            ##################
-
+            # test regression model step
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/test_regression_model",
+                "main",
+                env_manager="conda",
+                parameters={
+                    "mlflow_model": f"{config["modeling"]["output_artifact"]}:{config["alias"]["prod"]}",
+                    "test_dataset": f"{config["modeling"]["testdata_artifact"]}:{config["tag"]["latest"]}"
+                },
+            )
             pass
 
 
 if __name__ == "__main__":
     go()
+
+
+
+"""
+Saving this in case I need to run it again
+
+mlflow run . -P steps=train_random_forest -P hydra_options="modeling.max_tfidf_features=10,15,30 modeling.random_forest.max_features=0.1,0.33,0.5,0.75,1 -m"
+"""
