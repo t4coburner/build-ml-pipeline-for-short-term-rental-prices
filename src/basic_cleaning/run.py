@@ -27,7 +27,13 @@ def go(args):
     artifact_local_path = run.use_artifact(args.input_artifact).file()
     df = pd.read_csv(artifact_local_path)
 
+    logger.info("Input Artifact has %s rows and %s columns", *df.shape)
 
+    logger.info(f"remove duplicate rows")
+    df.drop_duplicates(inplace=True)
+
+    logger.info(f"remove rows with missing prices")
+    df.dropna(subset=['price'], inplace=True)
 
     logger.info(f"Filtering data between {args.min_price} and {args.max_price}")
     min_price = args.min_price
@@ -35,6 +41,11 @@ def go(args):
     idx = df['price'].between(min_price, max_price)
     df = df[idx].copy()
 
+    logger.info(f"Filtering data outside NYC boundaries")
+    idx = df["longitude"].between(-74.25, -73.50) & df["latitude"].between(40.5, 41.2)
+    df = df[idx].copy()
+
+    logger.info("Cleaned data has %s rows and %s columns", *df.shape)
 
     # Save the cleaned data to a new CSV file
     output_artifact_path = f"{args.output_artifact}"

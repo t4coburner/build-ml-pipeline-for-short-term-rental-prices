@@ -148,4 +148,6 @@ if __name__ == "__main__":
 Saving this in case I need to run it again
 
 mlflow run . -P steps=train_random_forest -P hydra_options="modeling.max_tfidf_features=10,15,30 modeling.random_forest.max_features=0.1,0.33,0.5,0.75,1 -m"
+
+mlflow run https://github.com/t4coburner/build-ml-pipeline-for-short-term-rental-prices.git -v 1.0.0 -P hydra_options="etl.sample='sample2.csv'"
 """
