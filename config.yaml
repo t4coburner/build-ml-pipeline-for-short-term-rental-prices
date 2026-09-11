@@ -5,6 +5,11 @@ main:
   project_name: nyc_airbnb
   experiment_name: development
   steps: all
+tag:
+  latest: "latest"
+  reference: "reference"
+alias:
+  prod: "prod"
 etl:
   sample: "sample1.csv"
   min_price: 10 # dollars
@@ -13,12 +18,11 @@ etl:
   output_artifact: "clean_sample.csv"
   output_type: "clean_sample"
   output_description: "Data with outliers removed"
-  tag_latest: "latest"
-  tag_reference: "reference"
 data_check:
   kl_threshold: 0.2
 modeling:
   trainval_artifact: "trainval_data.csv"
+  testdata_artifact: "test_data.csv"
   output_artifact: "random_forest_export"
   # Fraction of data to use for test (the remaining will be used for train and validation)
   test_size: 0.2

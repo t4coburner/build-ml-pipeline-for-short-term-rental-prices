@@ -57,7 +57,7 @@ def go(config: DictConfig):
                 "main",
                 env_manager="conda",
                 parameters={
-                    "input_artifact": f"{config["etl"]["input_artifact"]}:{config["etl"]["tag_latest"]}",
+                    "input_artifact": f"{config["etl"]["input_artifact"]}:{config["tag"]["latest"]}",
                     "output_artifact": config["etl"]["output_artifact"],
                     "output_type": config["etl"]["output_type"],
                     "output_description": config["etl"]["output_description"],
@@ -74,8 +74,8 @@ def go(config: DictConfig):
                 "main",
                 env_manager="conda",
                 parameters={
-                    "csv": f"{config["etl"]["output_artifact"]}:{config["etl"]["tag_latest"]}",
-                    "ref": f"{config["etl"]["output_artifact"]}:{config["etl"]["tag_reference"]}",
+                    "csv": f"{config["etl"]["output_artifact"]}:{config["tag"]["latest"]}",
+                    "ref": f"{config["etl"]["output_artifact"]}:{config["tag"]["reference"]}",
                     "kl_threshold": config["data_check"]["kl_threshold"],
                     "min_price": config["etl"]["min_price"],
                     "max_price": config["etl"]["max_price"]
@@ -90,7 +90,7 @@ def go(config: DictConfig):
                 "main",
                 env_manager="conda",
                 parameters={
-                    "input": f"{config["etl"]["output_artifact"]}:{config["etl"]["tag_latest"]}",
+                    "input": f"{config["etl"]["output_artifact"]}:{config["tag"]["latest"]}",
                     "test_size": config["modeling"]["test_size"],
                     "random_seed": config["modeling"]["random_seed"],
                     "stratify_by": config["modeling"]["stratify_by"]
@@ -114,7 +114,7 @@ def go(config: DictConfig):
                 "main",
                 env_manager="conda",
                 parameters={
-                    "trainval_artifact": f"{config["modeling"]["trainval_artifact"]}:{config["etl"]["tag_latest"]}",
+                    "trainval_artifact": f"{config["modeling"]["trainval_artifact"]}:{config["tag"]["latest"]}",
                     "val_size": config["modeling"]["val_size"],
                     "random_seed": config["modeling"]["random_seed"],
                     "stratify_by": config["modeling"]["stratify_by"],
@@ -126,11 +126,16 @@ def go(config: DictConfig):
             pass
 
         if "test_regression_model" in active_steps:
-
-            ##################
-            # Implement here #
-            ##################
-
+            # test regression model step
+            _ = mlflow.run(
+                f"{config['main']['components_repository']}/test_regression_model",
+                "main",
+                env_manager="conda",
+                parameters={
+                    "mlflow_model": f"{config["modeling"]["output_artifact"]}:{config["alias"]["prod"]}",
+                    "test_dataset": f"{config["modeling"]["testdata_artifact"]}:{config["tag"]["latest"]}"
+                },
+            )
             pass
 
 
