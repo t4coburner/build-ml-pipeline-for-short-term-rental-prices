@@ -6,28 +6,28 @@ entry_points:
     parameters:
 
       input_artifact:
-        description: ## ADD DESCRIPTION
+        description: input data file name to be cleaned
         type: string
 
       output_artifact:
-        description: ## ADD DESCRIPTION
+        description: cledaned data file name to be saved
         type: string
 
       output_type:
-        description: ## ADD DESCRIPTION
+        description: artifact type for the cleaned data file
         type: string
 
       output_description:
-        description: ## ADD DESCRIPTION
+        description: description for the cleaned data file
         type: string
 
       min_price:
-        description: ## ADD DESCRIPTION
-        type: string
+        description: set minimum accepted price for the data cleaning
+        type: float
 
       max_price:
-        description: ## ADD DESCRIPTION
-        type: string
+        description: set maximum accepted price for the data cleaning
+        type: float
 
 
     command: >-
